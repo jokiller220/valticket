@@ -1,28 +1,33 @@
 import { useState } from 'react';
 import { ArrowLeft, CheckCircle, RefreshCw } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
+import { syncUp, syncDown } from '../lib/sync';
 
 export default function SyncScreen() {
-  const { goBack, navigate } = useApp();
+  const { currentEvent, goBack, navigate } = useApp();
   const [progress, setProgress] = useState(0);
   const [syncing, setSyncing] = useState(false);
   const [done, setDone] = useState(false);
 
-  function startSync() {
+  async function startSync() {
+    if (!currentEvent) return;
     setSyncing(true);
     setProgress(0);
     setDone(false);
-    const interval = setInterval(() => {
-      setProgress(p => {
-        if (p >= 100) {
-          clearInterval(interval);
-          setSyncing(false);
-          setDone(true);
-          return 100;
-        }
-        return Math.min(p + Math.random() * 12 + 3, 100);
-      });
-    }, 180);
+    
+    try {
+      setProgress(25);
+      await syncUp();
+      setProgress(75);
+      await syncDown(currentEvent.id);
+      setProgress(100);
+      setDone(true);
+    } catch (err) {
+      console.error(err);
+      alert('Erreur lors de la synchronisation.');
+    } finally {
+      setSyncing(false);
+    }
   }
 
   const stats = [

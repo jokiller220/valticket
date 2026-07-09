@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
 import { Agent, Event, Screen, ScanResult } from '../types';
+import { syncDown, syncUp, subscribeToRealtime, unsubscribeRealtime } from '../lib/sync';
+import { useEffect } from 'react';
 
 interface AppContextValue {
   currentAgent: Agent | null;
@@ -56,6 +58,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
     setCurrentScreen(screen);
   }, [currentScreen]);
+
+  useEffect(() => {
+    function handleOnline() {
+      setIsOffline(false);
+      syncUp().catch(console.error);
+    }
+    function handleOffline() {
+      setIsOffline(true);
+    }
+    
+    setIsOffline(!navigator.onLine);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (currentEvent) {
+      if (navigator.onLine) {
+        syncDown(currentEvent.id).catch(console.error);
+        subscribeToRealtime(currentEvent.id);
+      }
+    } else {
+      unsubscribeRealtime();
+    }
+  }, [currentEvent]);
 
   const goBack = useCallback(() => {
     if (previousScreen) {
