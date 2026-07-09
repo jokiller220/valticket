@@ -40,8 +40,18 @@ const defaultSettings: AppSettings = {
 const AppContext = createContext<AppContextValue | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [currentAgent, setCurrentAgent] = useState<Agent | null>(null);
-  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+  const [currentAgent, setCurrentAgent] = useState<Agent | null>(() => {
+    try {
+      const saved = localStorage.getItem('vt_agent') || sessionStorage.getItem('vt_agent');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(() => {
+    try {
+      const saved = localStorage.getItem('vt_event') || sessionStorage.getItem('vt_event');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
   const [isOffline, setIsOffline] = useState(false);
   const [pendingSyncs, setPendingSyncs] = useState(0);
   const [currentScreen, setCurrentScreen] = useState<Screen>('splash');
@@ -57,6 +67,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
     setCurrentScreen(screen);
   }, [currentScreen]);
+
+  useEffect(() => {
+    if (currentAgent) {
+      if (localStorage.getItem('vt_agent_remember') === 'true') {
+        localStorage.setItem('vt_agent', JSON.stringify(currentAgent));
+      } else {
+        sessionStorage.setItem('vt_agent', JSON.stringify(currentAgent));
+      }
+    } else {
+      localStorage.removeItem('vt_agent');
+      sessionStorage.removeItem('vt_agent');
+    }
+  }, [currentAgent]);
+
+  useEffect(() => {
+    if (currentEvent) {
+      if (localStorage.getItem('vt_agent_remember') === 'true') {
+        localStorage.setItem('vt_event', JSON.stringify(currentEvent));
+      } else {
+        sessionStorage.setItem('vt_event', JSON.stringify(currentEvent));
+      }
+    } else {
+      localStorage.removeItem('vt_event');
+      sessionStorage.removeItem('vt_event');
+    }
+  }, [currentEvent]);
 
   useEffect(() => {
     function handleOnline() {

@@ -61,6 +61,7 @@ export default function LoginScreen() {
         setError('Code de connexion ou mot de passe incorrect.');
         return;
       }
+      localStorage.setItem('vt_agent_remember', rememberMe ? 'true' : 'false');
       setCurrentAgent(agent);
       if (agent.sv_events) {
         setCurrentEvent(agent.sv_events);
