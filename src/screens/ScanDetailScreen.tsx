@@ -26,8 +26,8 @@ export default function ScanDetailScreen() {
     (async () => {
       try {
         const { data } = await supabase
-          .from('scan_logs')
-          .select('*, tickets(*, ticket_types(*))')
+          .from('sv_scan_logs')
+          .select('*, tickets:sv_purchases(*, ticket_types:sv_ticket_types(*))')
           .eq('id', selectedScanLogId)
           .maybeSingle();
         if (data) setLog(data as ScanLog);
@@ -91,7 +91,7 @@ export default function ScanDetailScreen() {
               <InfoRow icon={Tag} label="Type de billet" value={log.tickets.ticket_types?.name || '—'} />
               <InfoRow icon={Hash} label="Numéro de ticket" value={log.tickets.ticket_number} />
               <InfoRow icon={Calendar} label="Acheté le" value={formatDate(log.tickets.purchased_at)} />
-              <InfoRow icon={CreditCard} label="Prix" value={`${log.tickets.price.toLocaleString()} FCFA`} />
+              <InfoRow icon={CreditCard} label="Prix" value={`${(log.tickets.total_amount || 0).toLocaleString()} FCFA`} />
               <InfoRow icon={Clock} label="Scanné le" value={formatDate(log.scanned_at)} />
               <InfoRow icon={User} label="Scanné par" value={log.agent_name || '—'} />
             </div>

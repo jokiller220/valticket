@@ -36,8 +36,8 @@ export default function ScanHistoryScreen() {
     setLoading(true);
     try {
       let query = supabase
-        .from('scan_logs')
-        .select('*, tickets(*, ticket_types(*))')
+        .from('sv_scan_logs')
+        .select('*, tickets:sv_purchases(*, ticket_types:sv_ticket_types(*))')
         .eq('event_id', currentEvent.id)
         .order('scanned_at', { ascending: false })
         .limit(100);

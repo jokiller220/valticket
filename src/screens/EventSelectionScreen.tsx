@@ -19,7 +19,7 @@ export default function EventSelectionScreen() {
   async function fetchEvents() {
     setLoading(true);
     try {
-      const { data } = await supabase.from('events').select('*').eq('is_active', true).order('date');
+      const { data } = await supabase.from('sv_events').select('*').eq('is_published', true).order('date');
       if (data) setEvents(data);
       setLastSync(new Date());
     } finally {
@@ -70,7 +70,7 @@ export default function EventSelectionScreen() {
                 />
                 <div className="flex flex-col justify-center gap-1 text-left py-3 pr-4 flex-1 min-w-0">
                   <div className="flex items-center gap-2">
-                    <h3 className="text-white font-bold text-sm leading-tight">{ev.name}</h3>
+                    <h3 className="text-white font-bold text-sm leading-tight">{ev.title || ev.name}</h3>
                     {isAssigned && <CheckCircle size={14} className="text-purple-400 shrink-0" />}
                   </div>
                   <div className="flex items-center gap-1 text-gray-400 text-xs">
@@ -79,11 +79,11 @@ export default function EventSelectionScreen() {
                   </div>
                   <div className="flex items-center gap-1 text-gray-400 text-xs">
                     <MapPin size={11} />
-                    <span>{ev.venue}, {ev.city}</span>
+                    <span>{ev.location || ev.venue}, {ev.city}</span>
                   </div>
                   <div className="flex items-center gap-1 text-gray-400 text-xs">
                     <Users size={11} />
-                    <span>Capacité: {ev.capacity.toLocaleString()}</span>
+                    <span>Capacité: {(ev.total_capacity || ev.capacity || 0).toLocaleString()}</span>
                   </div>
                 </div>
               </button>

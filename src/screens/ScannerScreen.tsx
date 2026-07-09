@@ -108,8 +108,8 @@ export default function ScannerScreen() {
       // Fallback to Supabase if not found locally
       if (!ticket) {
         const query = ticketId
-          ? supabase.from('sv_purchases').select('*, sv_ticket_types(*)').eq('id', ticketId).eq('event_id', currentEvent.id).maybeSingle()
-          : supabase.from('sv_purchases').select('*, sv_ticket_types(*)').eq('qr_code', ticketNumber).eq('event_id', currentEvent.id).maybeSingle();
+          ? supabase.from('sv_purchases').select('*, ticket_types:sv_ticket_types(*)').eq('id', ticketId).eq('event_id', currentEvent.id).maybeSingle()
+          : supabase.from('sv_purchases').select('*, ticket_types:sv_ticket_types(*)').eq('qr_code', ticketNumber).eq('event_id', currentEvent.id).maybeSingle();
           
         const { data } = await query;
         if (data) ticket = data;

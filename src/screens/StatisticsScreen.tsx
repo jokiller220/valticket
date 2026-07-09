@@ -22,11 +22,11 @@ export default function StatisticsScreen() {
     setLoading(true);
     try {
       const [validRes, alreadyRes, invalidRes, typesRes, logsRes] = await Promise.all([
-        supabase.from('scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'valid'),
-        supabase.from('scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'already_scanned'),
-        supabase.from('scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'invalid'),
-        supabase.from('ticket_types').select('*').eq('event_id', currentEvent.id),
-        supabase.from('scan_logs').select('scanned_at').eq('event_id', currentEvent.id).eq('result', 'valid'),
+        supabase.from('sv_scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'valid'),
+        supabase.from('sv_scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'already_scanned'),
+        supabase.from('sv_scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'invalid'),
+        supabase.from('sv_ticket_types').select('*').eq('event_id', currentEvent.id),
+        supabase.from('sv_scan_logs').select('scanned_at').eq('event_id', currentEvent.id).eq('result', 'valid'),
       ]);
 
       setTotalValid(validRes.count || 0);
@@ -103,7 +103,7 @@ export default function StatisticsScreen() {
           <div className="grid grid-cols-3 lg:grid-cols-6 gap-3">
             {[
               { label: 'Entrées totales', value: loading ? '—' : totalValid.toLocaleString(), color: 'text-white', span: 'lg:col-span-2' },
-              { label: 'Capacité', value: currentEvent.capacity.toLocaleString(), color: 'text-white', span: 'lg:col-span-2' },
+              { label: 'Capacité', value: (currentEvent.total_capacity || currentEvent.capacity || 0).toLocaleString(), color: 'text-white', span: 'lg:col-span-2' },
               { label: "Taux d'entrée", value: `${fillRate}%`, color: 'text-purple-400', span: 'lg:col-span-2' },
             ].map((s, i) => (
               <div key={i} className={`bg-[#1e1640] rounded-2xl p-4 md:p-5 ${s.span}`}>

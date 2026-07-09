@@ -21,7 +21,7 @@ import HelpScreen from './screens/HelpScreen';
 import TempCodeScreen from './screens/TempCodeScreen';
 import { Screen } from './types';
 
-const AUTH_SCREENS: Screen[] = ['splash', 'login', 'events'];
+const AUTH_SCREENS: Screen[] = ['splash', 'login', 'sv_events'];
 
 function Router() {
   const { currentScreen } = useApp();

@@ -33,9 +33,9 @@ export default function DashboardScreen() {
     setLoading(true);
     try {
       const [scansRes, recentRes, typesRes] = await Promise.all([
-        supabase.from('scan_logs').select('id, result', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'valid'),
-        supabase.from('scan_logs').select('*, tickets(*, ticket_types(*))').eq('event_id', currentEvent.id).order('scanned_at', { ascending: false }).limit(8),
-        supabase.from('ticket_types').select('*').eq('event_id', currentEvent.id),
+        supabase.from('sv_scan_logs').select('id, result', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'valid'),
+        supabase.from('sv_scan_logs').select('*, tickets:sv_purchases(*, ticket_types:sv_ticket_types(*))').eq('event_id', currentEvent.id).order('scanned_at', { ascending: false }).limit(8),
+        supabase.from('sv_ticket_types').select('*').eq('event_id', currentEvent.id),
       ]);
       if (scansRes.count !== null) setTotalScans(scansRes.count);
       if (recentRes.data) setRecentLogs(recentRes.data as ScanLog[]);
@@ -44,7 +44,7 @@ export default function DashboardScreen() {
       const since = new Date();
       since.setHours(since.getHours() - 8);
       const { data: hourData } = await supabase
-        .from('scan_logs')
+        .from('sv_scan_logs')
         .select('scanned_at')
         .eq('event_id', currentEvent.id)
         .eq('result', 'valid')
@@ -116,7 +116,7 @@ export default function DashboardScreen() {
           <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
             {[
               { label: "Entrées aujourd'hui", value: loading ? '—' : totalScans.toLocaleString(), color: 'text-white', span: 'lg:col-span-2' },
-              { label: 'Capacité', value: currentEvent.capacity.toLocaleString(), color: 'text-white', span: 'lg:col-span-2' },
+              { label: 'Capacité', value: (currentEvent.total_capacity || currentEvent.capacity || 0).toLocaleString(), color: 'text-white', span: 'lg:col-span-2' },
               { label: "Taux d'entrée", value: `${fillRate}%`, color: fillRate > 80 ? 'text-green-400' : 'text-purple-400', span: 'lg:col-span-2' },
             ].map((s, i) => (
               <div key={i} className={`bg-[#1e1640] rounded-2xl p-4 md:p-5 flex flex-col gap-1 ${s.span}`}>
@@ -169,7 +169,7 @@ export default function DashboardScreen() {
                           <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: tt.color }} />
                           <span className="text-gray-300 text-sm">{tt.name}</span>
                         </div>
-                        <span className="text-gray-500 text-xs">{tt.quota.toLocaleString()} places</span>
+                        <span className="text-gray-500 text-xs">{(tt.capacity || tt.quota || 0).toLocaleString()} places</span>
                       </div>
                     ))}
                   </div>

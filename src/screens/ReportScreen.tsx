@@ -16,9 +16,9 @@ export default function ReportScreen() {
     setLoading(true);
     try {
       const [v, a, i] = await Promise.all([
-        supabase.from('scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'valid'),
-        supabase.from('scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'already_scanned'),
-        supabase.from('scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'invalid'),
+        supabase.from('sv_scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'valid'),
+        supabase.from('sv_scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'already_scanned'),
+        supabase.from('sv_scan_logs').select('id', { count: 'exact' }).eq('event_id', currentEvent.id).eq('result', 'invalid'),
       ]);
       setTotalValid(v.count || 0);
       setTotalAlready(a.count || 0);
@@ -68,32 +68,26 @@ export default function ReportScreen() {
           <div className="grid grid-cols-3 gap-3">
             {[
               { label: 'Entrées totales', value: loading ? '—' : totalValid.toLocaleString(), color: 'text-white' },
-              { label: 'Capacité', value: currentEvent.capacity.toLocaleString(), color: 'text-white' },
-              { label: "Taux d'entrée", value: `${fillRate}%`, color: 'text-purple-400' },
+              { label: 'Capacité', value: (currentEvent.total_capacity || currentEvent.capacity || 0).toLocaleString(), color: 'text-white' },
+              { label: "Taux", value: `${fillRate}%`, color: fillRate > 80 ? 'text-green-400' : 'text-purple-400' },
             ].map((s, i) => (
-              <div key={i} className="bg-[#1e1640] rounded-2xl p-4 border border-white/[0.04]">
-                <p className="text-gray-500 text-[10px] mb-1 leading-tight">{s.label}</p>
-                <p className={`text-xl font-black ${s.color}`}>{s.value}</p>
+              <div key={i} className="bg-[#1e1640] rounded-2xl p-4 flex flex-col gap-1">
+                <span className="text-gray-400 text-xs leading-tight">{s.label}</span>
+                <span className={`text-xl font-black ${s.color}`}>{s.value}</span>
               </div>
             ))}
           </div>
 
-          {/* Fill rate bar */}
-          <div className="bg-[#1e1640] rounded-2xl p-5 border border-white/[0.04]">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-gray-300 text-sm font-medium">Taux de remplissage</span>
-              <div className="flex items-center gap-1 text-purple-400 text-sm font-bold">
-                <TrendingUp size={14} />
-                {fillRate}%
-              </div>
-            </div>
-            <div className="h-3 rounded-full bg-white/10 overflow-hidden">
+          {/* Jauge */}
+          <div className="bg-[#1e1640] rounded-2xl p-5 md:p-6 mb-6">
+            <h3 className="text-gray-300 text-sm font-medium mb-4">Progression globale</h3>
+            <div className="h-4 bg-white/5 rounded-full overflow-hidden flex">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-purple-600 to-purple-400 transition-all duration-700"
+                className="h-full bg-gradient-to-r from-purple-600 to-purple-400 transition-all duration-1000 rounded-full"
                 style={{ width: `${fillRate}%` }}
               />
             </div>
-            <p className="text-gray-500 text-xs mt-2">{totalValid.toLocaleString()} / {currentEvent.capacity.toLocaleString()} entrées validées</p>
+            <p className="text-gray-500 text-xs mt-2">{totalValid.toLocaleString()} / {(currentEvent.total_capacity || currentEvent.capacity || 0).toLocaleString()} entrées validées</p>
           </div>
 
           {/* Detail breakdown */}

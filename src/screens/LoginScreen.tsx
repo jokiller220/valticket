@@ -39,7 +39,7 @@ export default function LoginScreen() {
             member_since: new Date().toISOString(),
             created_at: new Date().toISOString(),
           });
-          navigate('events');
+          navigate('sv_events');
           return;
         }
       }
@@ -62,8 +62,12 @@ export default function LoginScreen() {
         return;
       }
       setCurrentAgent(agent);
-      if (agent.sv_events) setCurrentEvent(agent.sv_events);
-      navigate('events');
+      if (agent.sv_events) {
+        setCurrentEvent(agent.sv_events);
+        navigate('dashboard');
+      } else {
+        navigate('sv_events');
+      }
     } catch {
       setError('Erreur de connexion. Vérifiez vos identifiants ou votre réseau.');
     } finally {

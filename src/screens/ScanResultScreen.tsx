@@ -70,7 +70,7 @@ export default function ScanResultScreen() {
               <InfoRow icon={Tag} label="Type de billet" value={ticket.ticket_types?.name || '—'} />
               <InfoRow icon={Hash} label="Numéro de ticket" value={ticket.ticket_number} />
               <InfoRow icon={Calendar} label="Acheté le" value={formatDate(ticket.purchased_at)} />
-              <InfoRow icon={CreditCard} label="Prix" value={`${ticket.price.toLocaleString()} FCFA`} />
+              <InfoRow icon={CreditCard} label="Prix" value={`${(ticket.total_amount || 0).toLocaleString()} FCFA`} />
               {result === 'already_scanned' && scanLog && (
                 <>
                   <InfoRow icon={Clock} label="Première entrée" value={formatDate(scanLog.scanned_at)} />
@@ -98,16 +98,27 @@ export default function ScanResultScreen() {
         {result === 'already_scanned' && (
           <button
             onClick={() => navigate('history')}
-            className="flex-1 py-4 rounded-2xl bg-[#1e1640] border border-white/10 text-white font-bold text-sm transition-all active:scale-95 hover:bg-[#261e50]"
+            className="flex-1 py-3.5 rounded-xl border border-white/10 text-white text-sm font-medium hover:bg-white/5 transition-colors"
           >
-            Voir l'historique
+            Vérifier l'historique
           </button>
         )}
+        
+        {(result === 'already_scanned' || result === 'invalid') && (
+          <button
+            onClick={() => alert("Alerte de fraude envoyée à l'organisateur ! (Simulation)")}
+            className="flex-1 py-3.5 rounded-xl border border-red-500/40 text-red-400 bg-red-500/5 text-sm font-medium hover:bg-red-500/10 transition-colors flex items-center justify-center gap-2"
+          >
+            <AlertTriangle size={16} />
+            Signaler (Alerte Fraude)
+          </button>
+        )}
+
         <button
           onClick={() => navigate('scanner')}
-          className="flex-1 py-4 rounded-2xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-base transition-all active:scale-95"
+          className="flex-1 py-3.5 rounded-xl bg-purple-600 text-white text-sm font-medium hover:bg-purple-500 transition-colors active:scale-[0.98]"
         >
-          Nouveau scan
+          Scanner à nouveau
         </button>
       </div>
     </div>

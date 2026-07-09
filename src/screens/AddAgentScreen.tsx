@@ -27,7 +27,7 @@ export default function AddAgentScreen() {
     setLoading(true);
     try {
       const initials = fullName.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
-      const { error: err } = await supabase.from('agents').insert({
+      const { error: err } = await supabase.from('sv_agents').insert({
         full_name: fullName,
         login_code: loginCode.trim().toUpperCase(),
         temp_password: tempPassword,

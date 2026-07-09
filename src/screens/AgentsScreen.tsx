@@ -15,7 +15,7 @@ export default function AgentsScreen() {
     setLoading(true);
     try {
       const { data } = await supabase
-        .from('agents')
+        .from('sv_agents')
         .select('*')
         .eq('event_id', currentEvent.id)
         .order('created_at');
@@ -28,7 +28,7 @@ export default function AgentsScreen() {
   useEffect(() => { fetchAgents(); }, [fetchAgents]);
 
   async function toggleAgent(agent: Agent) {
-    await supabase.from('agents').update({ is_active: !agent.is_active }).eq('id', agent.id);
+    await supabase.from('sv_agents').update({ is_active: !agent.is_active }).eq('id', agent.id);
     fetchAgents();
   }
 

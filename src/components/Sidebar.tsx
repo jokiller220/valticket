@@ -7,7 +7,7 @@ const mainNav: { icon: typeof LayoutDashboard; label: string; screen: Screen }[]
   { icon: QrCode, label: 'Scanner', screen: 'scanner' },
   { icon: Clock, label: 'Historique', screen: 'history' },
   { icon: BarChart2, label: 'Statistiques', screen: 'statistics' },
-  { icon: Users, label: 'Agents', screen: 'agents' },
+  { icon: Users, label: 'sv_agents', screen: 'sv_agents' },
 ];
 
 const secondaryNav: { icon: typeof LayoutDashboard; label: string; screen: Screen }[] = [
