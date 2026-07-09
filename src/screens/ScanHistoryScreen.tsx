@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Filter, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import { supabase } from '../lib/supabase';
+import { db } from '../lib/db';
 import { ScanLog } from '../types';
 import BottomNav from '../components/BottomNav';
 
@@ -26,7 +27,7 @@ function formatDateTime(d: string) {
 }
 
 export default function ScanHistoryScreen() {
-  const { currentEvent, navigate, setSelectedScanLogId } = useApp();
+  const { currentEvent, isOffline, navigate, setSelectedScanLogId } = useApp();
   const [logs, setLogs] = useState<ScanLog[]>([]);
   const [filter, setFilter] = useState<FilterType>('all');
   const [loading, setLoading] = useState(true);
@@ -35,19 +36,26 @@ export default function ScanHistoryScreen() {
     if (!currentEvent) return;
     setLoading(true);
     try {
-      let query = supabase
-        .from('sv_scan_logs')
-        .select('*, tickets:sv_purchases(*, ticket_types:sv_ticket_types(*))')
-        .eq('event_id', currentEvent.id)
-        .order('scanned_at', { ascending: false })
-        .limit(100);
-      if (filter !== 'all') query = query.eq('result', filter);
-      const { data } = await query;
-      if (data) setLogs(data as ScanLog[]);
+      if (isOffline) {
+        // Load from local IndexedDB when offline
+        let localLogs = await db.scanLogs.where('event_id').equals(currentEvent.id).reverse().sortBy('scanned_at');
+        if (filter !== 'all') localLogs = localLogs.filter(l => l.result === filter);
+        setLogs(localLogs.slice(0, 100) as ScanLog[]);
+      } else {
+        let query = supabase
+          .from('sv_scan_logs')
+          .select('*, tickets:sv_purchases(*, ticket_types:sv_ticket_types(*))')
+          .eq('event_id', currentEvent.id)
+          .order('scanned_at', { ascending: false })
+          .limit(100);
+        if (filter !== 'all') query = query.eq('result', filter);
+        const { data } = await query;
+        if (data) setLogs(data as ScanLog[]);
+      }
     } finally {
       setLoading(false);
     }
-  }, [currentEvent, filter]);
+  }, [currentEvent, filter, isOffline]);
 
   useEffect(() => { fetchLogs(); }, [fetchLogs]);
 

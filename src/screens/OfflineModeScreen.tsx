@@ -1,9 +1,23 @@
+import { useEffect, useState } from 'react';
 import { WifiOff, RefreshCw, ArrowLeft, CloudOff } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import BottomNav from '../components/BottomNav';
+import { db } from '../lib/db';
 
 export default function OfflineModeScreen() {
-  const { navigate, goBack, pendingSyncs } = useApp();
+  const { navigate, goBack } = useApp();
+  const [pendingCount, setPendingCount] = useState(0);
+  const [syncedCount, setSyncedCount] = useState(0);
+
+  useEffect(() => {
+    async function loadCounts() {
+      const all = await db.scanLogs.toArray();
+      const pending = all.filter(l => !l.synced || l.synced === false || (l.synced as unknown as string) === 'false');
+      setPendingCount(pending.length);
+      setSyncedCount(all.length - pending.length);
+    }
+    loadCounts();
+  }, []);
 
   return (
     <div className="flex flex-col min-h-full bg-[#0d0a1a]">
@@ -35,11 +49,11 @@ export default function OfflineModeScreen() {
           <div className="grid grid-cols-2 gap-4 w-full">
             <div className="bg-[#1e1640] rounded-2xl p-5 border border-white/[0.04]">
               <p className="text-gray-400 text-xs mb-1">Scans synchronisés</p>
-              <p className="text-white text-2xl font-black">24 / 35</p>
+              <p className="text-white text-2xl font-black">{syncedCount}</p>
             </div>
             <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-2xl p-5">
               <p className="text-yellow-400/70 text-xs mb-1">Scans en attente</p>
-              <p className="text-yellow-400 text-2xl font-black">{pendingSyncs || 12}</p>
+              <p className="text-yellow-400 text-2xl font-black">{pendingCount}</p>
             </div>
           </div>
 

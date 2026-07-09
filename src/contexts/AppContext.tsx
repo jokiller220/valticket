@@ -1,7 +1,6 @@
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { Agent, Event, Screen, ScanResult } from '../types';
 import { syncDown, syncUp, subscribeToRealtime, unsubscribeRealtime } from '../lib/sync';
-import { useEffect } from 'react';
 
 interface AppContextValue {
   currentAgent: Agent | null;
