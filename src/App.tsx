@@ -68,7 +68,7 @@ function Router() {
       <Sidebar />
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col min-h-screen bg-[#0d0a1a] overflow-y-auto">
+      <main className="flex-1 flex flex-col min-h-screen bg-[#0d0a1a] overflow-y-auto safe-pt safe-pl safe-pr">
         {content}
       </main>
     </div>
