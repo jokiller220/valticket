@@ -100,19 +100,24 @@ export default function ScannerScreen() {
         ticketNumber = parsed.ticket_number || parsed.qr_code || rawData;
       } catch { /* raw data is ticket number */ }
 
-      // Try local DB first
+      // Try local DB first (exact qr_code match)
       let ticket = ticketId 
         ? await db.tickets.get(ticketId)
-        : await db.tickets.where('qr_code').equals(ticketNumber).first();
+        : await db.tickets.where('qr_code').equals(ticketNumber.toLowerCase()).first() 
+          || await db.tickets.where('qr_code').equals(ticketNumber.toUpperCase()).first()
+          || await db.tickets.where('qr_code').equalsIgnoreCase(ticketNumber).first();
 
       // Fallback to Supabase if not found locally
       if (!ticket) {
-        const query = ticketId
-          ? supabase.from('sv_purchases').select('*, ticket_types:sv_ticket_types(*)').eq('id', ticketId).eq('event_id', currentEvent.id).maybeSingle()
-          : supabase.from('sv_purchases').select('*, ticket_types:sv_ticket_types(*)').eq('qr_code', ticketNumber).eq('event_id', currentEvent.id).maybeSingle();
+        const { data, error } = ticketId
+          ? await supabase.from('sv_purchases').select('*, sv_ticket_types(*)').eq('id', ticketId).eq('event_id', currentEvent.id).maybeSingle()
+          : await supabase.from('sv_purchases').select('*, sv_ticket_types(*)').ilike('qr_code', ticketNumber.trim()).eq('event_id', currentEvent.id).maybeSingle();
           
-        const { data } = await query;
-        if (data) ticket = data;
+        if (error) console.error('Supabase query error:', error);
+        if (data) {
+          // Normalize: map sv_ticket_types → ticket_types for compatibility
+          ticket = { ...data, ticket_types: (data as any).sv_ticket_types };
+        }
       }
 
       let result: ScanResult;
