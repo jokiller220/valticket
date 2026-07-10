@@ -54,7 +54,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   });
   const [isOffline, setIsOffline] = useState(false);
   const [pendingSyncs, setPendingSyncs] = useState(0);
-  const [currentScreen, setCurrentScreen] = useState<Screen>('splash');
+  const [currentScreen, setCurrentScreen] = useState<Screen>(() => {
+    try {
+      const savedAgent = localStorage.getItem('vt_agent') || sessionStorage.getItem('vt_agent');
+      if (savedAgent) {
+        const savedEvent = localStorage.getItem('vt_event') || sessionStorage.getItem('vt_event');
+        return savedEvent ? 'dashboard' : 'sv_events';
+      }
+    } catch { }
+    return 'splash';
+  });
   const [previousScreen, setPreviousScreen] = useState<Screen | null>(null);
   const [lastScanResult, setLastScanResult] = useState<ScanResult | null>(null);
   const [selectedScanLogId, setSelectedScanLogId] = useState<string | null>(null);
