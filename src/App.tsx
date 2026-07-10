@@ -53,9 +53,9 @@ function Router() {
 
   if (isAuth) {
     return (
-      <div className="min-h-screen bg-[#06030f] flex items-center justify-center">
+      <div className="h-[100dvh] w-full bg-[#06030f] flex items-center justify-center">
         {/* Mobile: full screen. Desktop: centered card */}
-        <div className="w-full md:max-w-md md:min-h-0 md:rounded-3xl md:shadow-2xl md:shadow-black/80 min-h-screen md:my-8 bg-[#0d0a1a] flex flex-col overflow-hidden">
+        <div className="w-full md:max-w-md md:min-h-0 md:rounded-3xl md:shadow-2xl md:shadow-black/80 h-full md:h-auto md:max-h-[90dvh] bg-[#0d0a1a] flex flex-col overflow-hidden">
           {content}
         </div>
       </div>
@@ -63,12 +63,12 @@ function Router() {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#06030f]">
+    <div className="flex h-[100dvh] w-full bg-[#06030f]">
       {/* Sidebar — hidden on mobile */}
       <Sidebar />
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col min-h-screen bg-[#0d0a1a] overflow-y-auto safe-pt safe-pl safe-pr">
+      <main className="flex-1 flex flex-col h-full bg-[#0d0a1a] overflow-y-auto safe-pt safe-pl safe-pr">
         {content}
       </main>
     </div>
