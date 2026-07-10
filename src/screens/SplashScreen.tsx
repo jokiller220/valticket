@@ -3,12 +3,22 @@ import { CheckCircle, Wifi, WifiOff } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 
 export default function SplashScreen() {
-  const { navigate, isOffline, setIsOffline } = useApp();
+  const { navigate, isOffline, setIsOffline, currentAgent, currentEvent } = useApp();
 
   useEffect(() => {
-    const timer = setTimeout(() => navigate('login'), 2500);
+    const timer = setTimeout(() => {
+      if (currentAgent) {
+        if (currentEvent) {
+          navigate('dashboard');
+        } else {
+          navigate('sv_events');
+        }
+      } else {
+        navigate('login');
+      }
+    }, 2500);
     return () => clearTimeout(timer);
-  }, [navigate]);
+  }, [navigate, currentAgent, currentEvent]);
 
   return (
     <div className="flex flex-col items-center justify-between flex-1 bg-gradient-to-b from-[#1a0a3e] via-[#0d0a1a] to-[#0d0a1a] px-8 py-12">
