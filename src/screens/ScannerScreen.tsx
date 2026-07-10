@@ -8,7 +8,7 @@ import { ScanResult } from '../types';
 import BottomNav from '../components/BottomNav';
 
 export default function ScannerScreen() {
-  const { currentEvent, currentAgent, navigate, setLastScanResult } = useApp();
+  const { currentEvent, currentAgent, navigate, setLastScanResult, settings, isOffline } = useApp();
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number>(0);
@@ -127,37 +127,37 @@ export default function ScannerScreen() {
         result = { result: 'invalid', reason: 'QR code non reconnu' };
         const logData = {
           id: scanLogId, purchase_id: null, event_id: currentEvent.id, agent_id: currentAgent.id,
-          result: 'invalid' as const, ticket_number_attempted: ticketNumber, agent_name: currentAgent.full_name, synced: navigator.onLine,
+          result: 'invalid' as const, ticket_number_attempted: ticketNumber, agent_name: currentAgent.full_name, synced: (navigator.onLine && !isOffline),
           scanned_at: new Date().toISOString()
         };
         await db.scanLogs.put({ ...logData, created_at: logData.scanned_at });
-        if (navigator.onLine) await supabase.from('sv_scan_logs').insert(logData);
+        if ((navigator.onLine && !isOffline)) await supabase.from('sv_scan_logs').insert(logData);
       } else if (ticket.status === 'used' || ticket.status === 'scanned') {
         const prevLog = await db.scanLogs.where('purchase_id').equals(ticket.id).and(l => l.result === 'valid').first();
         result = { result: 'already_scanned', ticket, scanLog: prevLog || undefined };
         
         const logData = {
           id: scanLogId, purchase_id: ticket.id, event_id: currentEvent.id, agent_id: currentAgent.id,
-          result: 'already_scanned' as const, ticket_number_attempted: ticket.qr_code || ticketNumber, agent_name: currentAgent.full_name, synced: navigator.onLine,
+          result: 'already_scanned' as const, ticket_number_attempted: ticket.qr_code || ticketNumber, agent_name: currentAgent.full_name, synced: (navigator.onLine && !isOffline),
           scanned_at: new Date().toISOString()
         };
         await db.scanLogs.put({ ...logData, created_at: logData.scanned_at });
-        if (navigator.onLine) await supabase.from('sv_scan_logs').insert(logData);
+        if ((navigator.onLine && !isOffline)) await supabase.from('sv_scan_logs').insert(logData);
       } else if (ticket.status === 'cancelled') {
         result = { result: 'invalid', ticket, reason: 'Billet annulé' };
         
         const logData = {
           id: scanLogId, purchase_id: ticket.id, event_id: currentEvent.id, agent_id: currentAgent.id,
-          result: 'invalid' as const, ticket_number_attempted: ticket.qr_code || ticketNumber, agent_name: currentAgent.full_name, synced: navigator.onLine,
+          result: 'invalid' as const, ticket_number_attempted: ticket.qr_code || ticketNumber, agent_name: currentAgent.full_name, synced: (navigator.onLine && !isOffline),
           scanned_at: new Date().toISOString()
         };
         await db.scanLogs.put({ ...logData, created_at: logData.scanned_at });
-        if (navigator.onLine) await supabase.from('sv_scan_logs').insert(logData);
+        if ((navigator.onLine && !isOffline)) await supabase.from('sv_scan_logs').insert(logData);
       } else {
         // Valid
         const logData = {
           id: scanLogId, purchase_id: ticket.id, event_id: currentEvent.id, agent_id: currentAgent.id,
-          result: 'valid' as const, ticket_number_attempted: ticket.qr_code || ticketNumber, agent_name: currentAgent.full_name, synced: navigator.onLine,
+          result: 'valid' as const, ticket_number_attempted: ticket.qr_code || ticketNumber, agent_name: currentAgent.full_name, synced: (navigator.onLine && !isOffline),
           scanned_at: new Date().toISOString()
         };
         
@@ -167,7 +167,7 @@ export default function ScannerScreen() {
         await db.scanLogs.put({ ...logData, created_at: logData.scanned_at });
         
         // Update remote status
-        if (navigator.onLine) {
+        if ((navigator.onLine && !isOffline)) {
           await supabase.from('sv_purchases').update({ status: 'scanned', scanned_at: logData.scanned_at }).eq('id', ticket.id);
           await supabase.from('sv_scan_logs').insert(logData);
         }

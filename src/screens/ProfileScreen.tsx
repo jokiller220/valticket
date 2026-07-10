@@ -3,7 +3,7 @@ import { useApp } from '../contexts/AppContext';
 import BottomNav from '../components/BottomNav';
 
 export default function ProfileScreen() {
-  const { currentAgent, currentEvent, navigate, setCurrentAgent, setCurrentEvent, isOffline } = useApp();
+  const { currentAgent, currentEvent, navigate, setCurrentAgent, setCurrentEvent, isOffline, setIsOffline } = useApp();
 
   function handleLogout() {
     setCurrentAgent(null);
@@ -24,7 +24,6 @@ export default function ProfileScreen() {
     { icon: Settings, label: 'Paramètres', screen: 'settings' as const },
     { icon: HelpCircle, label: 'Aide', screen: 'help' as const },
     { icon: FileText, label: 'Rapport', screen: 'report' as const },
-    { icon: Key, label: 'Code temporaire', screen: 'temp-code' as const },
   ];
 
   return (
@@ -73,9 +72,20 @@ export default function ProfileScreen() {
                   {isOffline ? <WifiOff size={14} className="text-yellow-400" /> : <Wifi size={14} className="text-green-400" />}
                   Mode hors-ligne
                 </div>
-                <span className={`text-sm font-medium ${isOffline ? 'text-yellow-400' : 'text-green-400'}`}>
-                  {isOffline ? 'Activé' : 'Désactivé'}
-                </span>
+                <button
+                  onClick={async () => {
+                    const nextState = !isOffline;
+                    if (nextState && currentEvent && navigator.onLine) {
+                      // Downloading before going offline
+                      const { syncDown } = await import('../lib/sync');
+                      await syncDown(currentEvent.id);
+                    }
+                    setIsOffline(nextState);
+                  }}
+                  className={`relative w-12 h-6 rounded-full transition-colors ${isOffline ? 'bg-yellow-500' : 'bg-gray-700'}`}
+                >
+                  <div className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white transition-transform ${isOffline ? 'translate-x-6' : ''}`} />
+                </button>
               </div>
             </div>
 

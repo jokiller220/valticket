@@ -134,14 +134,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [settings.autoSync]);
 
   useEffect(() => {
-    if (currentEvent) {
+    if (currentEvent && !isOffline) {
       if (navigator.onLine) {
         syncDown(currentEvent.id).catch(console.error);
         subscribeToRealtime(currentEvent.id);
       }
       
       const interval = setInterval(() => {
-        if (navigator.onLine && settings.autoSync) {
+        if (navigator.onLine && settings.autoSync && !isOffline) {
           syncUp().catch(console.error);
         }
       }, 30000);
@@ -150,7 +150,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     } else {
       unsubscribeRealtime();
     }
-  }, [currentEvent, settings.autoSync]);
+  }, [currentEvent, settings.autoSync, isOffline]);
 
   const goBack = useCallback(() => {
     if (previousScreen) {
