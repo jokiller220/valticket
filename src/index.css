@@ -33,5 +33,6 @@ html, body, #root {
   overscroll-behavior: none;
   user-select: none;
   -webkit-user-select: none;
+  background-color: #06030f;
 }
 
