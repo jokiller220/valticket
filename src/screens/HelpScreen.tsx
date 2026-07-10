@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Search, ChevronDown, ChevronUp, Book, AlertCircle, Phone } from 'lucide-react';
+import { ArrowLeft, Search, ChevronDown, ChevronUp, Book, AlertCircle, Phone, Mail } from 'lucide-react';
 import { useApp } from '../contexts/AppContext';
 import BottomNav from '../components/BottomNav';
 
@@ -22,9 +22,16 @@ export default function HelpScreen() {
   );
 
   const links = [
-    { icon: Book, label: "Guide d'utilisation", color: 'text-purple-400', bg: 'bg-purple-500/10' },
-    { icon: AlertCircle, label: 'Résolution des problèmes', color: 'text-orange-400', bg: 'bg-orange-500/10' },
-    { icon: Phone, label: 'Contacter le support', color: 'text-green-400', bg: 'bg-green-500/10' },
+    { icon: Book, label: "Guide d'utilisation", color: 'text-purple-400', bg: 'bg-purple-500/10', action: () => {
+      const faqSection = document.getElementById('faq-section');
+      if (faqSection) faqSection.scrollIntoView({ behavior: 'smooth' });
+    } },
+    { icon: Mail, label: 'Support Email', color: 'text-blue-400', bg: 'bg-blue-500/10', action: () => {
+      window.location.href = 'mailto:support@sumvibe.com';
+    } },
+    { icon: Phone, label: 'WhatsApp', color: 'text-green-400', bg: 'bg-green-500/10', action: () => {
+      window.open('https://wa.me/33759679007', '_blank');
+    } },
   ];
 
   return (
@@ -53,8 +60,8 @@ export default function HelpScreen() {
 
           {/* Quick links */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            {links.map(({ icon: Icon, label, color, bg }) => (
-              <button key={label} className={`flex items-center gap-3 ${bg} rounded-xl px-4 py-3.5 text-left hover:opacity-80 transition-opacity`}>
+            {links.map(({ icon: Icon, label, color, bg, action }) => (
+              <button key={label} onClick={action} className={`flex items-center gap-3 ${bg} rounded-xl px-4 py-3.5 text-left hover:opacity-80 transition-opacity`}>
                 <div className={`w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0`}>
                   <Icon size={16} className={color} />
                 </div>
@@ -64,7 +71,7 @@ export default function HelpScreen() {
           </div>
 
           {/* FAQ */}
-          <div>
+          <div id="faq-section">
             <p className="text-gray-500 text-xs uppercase tracking-widest mb-3">Questions fréquentes</p>
             <div className="flex flex-col gap-2">
               {filtered.length === 0 ? (
