@@ -98,6 +98,7 @@ export type Screen =
   | 'report'
   | 'export-report'
   | 'help'
+  | 'about'
   | 'temp-code';
 
 export interface ScanResult {

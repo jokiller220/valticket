@@ -67,7 +67,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [previousScreen, setPreviousScreen] = useState<Screen | null>(null);
   const [lastScanResult, setLastScanResult] = useState<ScanResult | null>(null);
   const [selectedScanLogId, setSelectedScanLogId] = useState<string | null>(null);
-  const [settings, setSettings] = useState<AppSettings>(defaultSettings);
+  const [settings, setSettings] = useState<AppSettings>(() => {
+    try {
+      const saved = localStorage.getItem('vt_settings');
+      return saved ? JSON.parse(saved) : defaultSettings;
+    } catch { return defaultSettings; }
+  });
 
   const navigate = useCallback((screen: Screen) => {
     setPreviousScreen(prev => {
@@ -104,9 +109,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [currentEvent]);
 
   useEffect(() => {
+    localStorage.setItem('vt_settings', JSON.stringify(settings));
+  }, [settings]);
+
+  useEffect(() => {
     function handleOnline() {
       setIsOffline(false);
-      syncUp().catch(console.error);
+      if (settings.autoSync) {
+        syncUp().catch(console.error);
+      }
     }
     function handleOffline() {
       setIsOffline(true);
@@ -120,7 +131,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, []);
+  }, [settings.autoSync]);
 
   useEffect(() => {
     if (currentEvent) {
@@ -128,10 +139,18 @@ export function AppProvider({ children }: { children: ReactNode }) {
         syncDown(currentEvent.id).catch(console.error);
         subscribeToRealtime(currentEvent.id);
       }
+      
+      const interval = setInterval(() => {
+        if (navigator.onLine && settings.autoSync) {
+          syncUp().catch(console.error);
+        }
+      }, 30000);
+      
+      return () => clearInterval(interval);
     } else {
       unsubscribeRealtime();
     }
-  }, [currentEvent]);
+  }, [currentEvent, settings.autoSync]);
 
   const goBack = useCallback(() => {
     if (previousScreen) {

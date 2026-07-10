@@ -53,18 +53,6 @@ export default function SettingsScreen() {
             </div>
           </div>
 
-          <div>
-            <p className="text-gray-500 text-xs uppercase tracking-widest mb-2 px-1">Apparence</p>
-            <div className="bg-[#1e1640] rounded-2xl overflow-hidden border border-white/[0.04]">
-              <div className="flex items-center justify-between px-5 py-4">
-                <div className="flex items-center gap-3 text-gray-200 text-sm">
-                  <Moon size={16} className="text-purple-400" />
-                  Mode sombre
-                </div>
-                <Toggle value={settings.darkMode} onChange={() => updateSettings({ darkMode: !settings.darkMode })} />
-              </div>
-            </div>
-          </div>
 
           <div>
             <p className="text-gray-500 text-xs uppercase tracking-widest mb-2 px-1">Support</p>
@@ -76,7 +64,7 @@ export default function SettingsScreen() {
                 </div>
                 <ChevronRight size={16} className="text-gray-500" />
               </button>
-              <button className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors">
+              <button onClick={() => navigate('about')} className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors">
                 <div className="flex items-center gap-3 text-gray-200 text-sm">
                   <Info size={16} className="text-purple-400" />
                   À propos de Valticket v1.0.0

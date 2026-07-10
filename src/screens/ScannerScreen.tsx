@@ -175,10 +175,57 @@ export default function ScannerScreen() {
         result = { result: 'valid', ticket, scanLog: { ...logData, created_at: logData.scanned_at } };
       }
 
+      if (settings.vibration && 'vibrate' in navigator) {
+        navigator.vibrate(result.result === 'valid' ? [100] : [100, 100, 100]);
+      }
+      
+      if (settings.scanSound) {
+        try {
+          const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const oscillator = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          oscillator.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          
+          if (result.result === 'valid') {
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.1);
+          } else {
+            oscillator.type = 'square';
+            oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+            gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.3);
+          }
+        } catch {}
+      }
+
       setLastScanResult(result);
       navigate('scan-result');
     } catch (err) {
       console.error(err);
+      
+      if (settings.vibration && 'vibrate' in navigator) {
+        navigator.vibrate([100, 100, 100]);
+      }
+      if (settings.scanSound) {
+        try {
+          const audioCtx = new (window.AudioContext || (window as any).webkitAudioContext)();
+          const oscillator = audioCtx.createOscillator();
+          const gainNode = audioCtx.createGain();
+          oscillator.connect(gainNode);
+          gainNode.connect(audioCtx.destination);
+          oscillator.type = 'square';
+          oscillator.frequency.setValueAtTime(200, audioCtx.currentTime);
+          gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+          oscillator.start();
+          oscillator.stop(audioCtx.currentTime + 0.3);
+        } catch {}
+      }
+      
       setLastScanResult({ result: 'invalid', reason: 'Erreur de validation' });
       navigate('scan-result');
     }

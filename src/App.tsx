@@ -18,6 +18,7 @@ import SyncScreen from './screens/SyncScreen';
 import ReportScreen from './screens/ReportScreen';
 import ExportReportScreen from './screens/ExportReportScreen';
 import HelpScreen from './screens/HelpScreen';
+import AboutScreen from './screens/AboutScreen';
 import TempCodeScreen from './screens/TempCodeScreen';
 import { Screen } from './types';
 
@@ -45,6 +46,7 @@ function Router() {
     report: <ReportScreen />,
     'export-report': <ExportReportScreen />,
     help: <HelpScreen />,
+    about: <AboutScreen />,
     'temp-code': <TempCodeScreen />,
   };
 
