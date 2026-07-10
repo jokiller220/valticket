@@ -77,7 +77,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <div className="flex flex-col min-h-full bg-[#0d0a1a] px-6 py-8">
+    <div className="flex flex-col flex-1 bg-[#0d0a1a] px-6 py-8">
       <button onClick={() => navigate('splash')} className="w-8 h-8 flex items-center justify-center text-gray-400 mb-8">
         <ArrowLeft size={20} />
       </button>

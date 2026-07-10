@@ -11,7 +11,7 @@ export default function SplashScreen() {
   }, [navigate]);
 
   return (
-    <div className="flex flex-col items-center justify-between min-h-full bg-gradient-to-b from-[#1a0a3e] via-[#0d0a1a] to-[#0d0a1a] px-8 py-12">
+    <div className="flex flex-col items-center justify-between flex-1 bg-gradient-to-b from-[#1a0a3e] via-[#0d0a1a] to-[#0d0a1a] px-8 py-12">
       <div />
 
       <div className="flex flex-col items-center gap-6">
