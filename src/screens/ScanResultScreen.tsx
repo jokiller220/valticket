@@ -1,4 +1,4 @@
-﻿import { CheckCircle, XCircle, AlertTriangle, ArrowLeft, Clock, User, Tag, Hash, CreditCard, Calendar } from "lucide-react";
+import { CheckCircle, XCircle, AlertTriangle, ArrowLeft, Clock, User, Tag, Hash, CreditCard, Calendar } from "lucide-react";
 import { useApp } from "../contexts/AppContext";
 
 function InfoRow({ icon: Icon, label, value }: { icon: typeof User; label: string; value: string }) {
@@ -48,7 +48,7 @@ export default function ScanResultScreen() {
   const ticketTypeName = (ticket as any)?.ticket_types?.name || (ticket as any)?.sv_ticket_types?.name || "--";
 
   return (
-    <div className="flex flex-col min-h-full bg-[#0d0a1a]">
+    <div className="flex flex-col flex-1 bg-[#0d0a1a]">
       <div className={`bg-gradient-to-b ${config.headerBg} px-5 md:px-10 pt-8 pb-10`}>
         <button onClick={() => navigate("scanner")} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8">
           <ArrowLeft size={18} />

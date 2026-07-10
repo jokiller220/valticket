@@ -185,7 +185,7 @@ export default function ScannerScreen() {
   }
 
   return (
-    <div className="flex flex-col min-h-full bg-[#0a0810]">
+    <div className="flex flex-col flex-1 bg-[#0a0810]">
       {/* Header (desktop only) */}
       <div className="hidden md:flex items-center gap-3 px-8 pt-8 pb-4 border-b border-white/[0.06]">
         <h2 className="text-xl font-bold text-white">Scanner QR</h2>

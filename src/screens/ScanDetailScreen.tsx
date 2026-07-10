@@ -43,7 +43,7 @@ export default function ScanDetailScreen() {
 
   if (loading) {
     return (
-      <div className="flex flex-col min-h-full bg-[#0d0a1a] items-center justify-center">
+      <div className="flex flex-col flex-1 bg-[#0d0a1a] items-center justify-center">
         <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -60,7 +60,7 @@ export default function ScanDetailScreen() {
   const Icon = resultConfig.icon;
 
   return (
-    <div className="flex flex-col min-h-full bg-[#0d0a1a]">
+    <div className="flex flex-col flex-1 bg-[#0d0a1a]">
       <div className="flex items-center gap-3 px-5 md:px-8 lg:px-10 pt-6 md:pt-8 pb-4 border-b border-white/[0.06]">
         <button onClick={goBack} className="text-gray-400 hover:text-white transition-colors">
           <ArrowLeft size={20} />
