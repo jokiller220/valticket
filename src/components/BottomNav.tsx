@@ -14,7 +14,7 @@ export default function BottomNav() {
   const { currentScreen, navigate } = useApp();
 
   return (
-    <div className="md:hidden flex items-center justify-around bg-[#130e28] border-t border-white/10 pt-2 px-1 safe-pb">
+    <div className="md:hidden fixed bottom-0 left-0 w-full z-50 flex items-center justify-around bg-[#130e28] border-t border-white/10 pt-2 px-1 safe-pb">
       {navItems.map(({ icon: Icon, label, screen }) => {
         const active = currentScreen === screen;
         return (
