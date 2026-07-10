@@ -107,8 +107,8 @@ export default function ScannerScreen() {
           || await db.tickets.where('qr_code').equals(ticketNumber.toUpperCase()).first()
           || await db.tickets.where('qr_code').equalsIgnoreCase(ticketNumber).first();
 
-      // Fallback to Supabase if not found locally
-      if (!ticket) {
+      // Fallback to Supabase if not found locally and we are online
+      if (!ticket && navigator.onLine && !isOffline) {
         const { data, error } = ticketId
           ? await supabase.from('sv_purchases').select('*, sv_ticket_types(*)').eq('id', ticketId).eq('event_id', currentEvent.id).maybeSingle()
           : await supabase.from('sv_purchases').select('*, sv_ticket_types(*)').ilike('qr_code', ticketNumber.trim()).eq('event_id', currentEvent.id).maybeSingle();

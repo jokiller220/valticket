@@ -54,7 +54,11 @@ export default function LoginScreen() {
 
       if (agentErr) throw agentErr;
       if (!agent) {
-        setError('Code de connexion incorrect.');
+        setError('Code de connexion ou mot de passe incorrect.');
+        return;
+      }
+      if (agent.temp_password !== password) {
+        setError('Code de connexion ou mot de passe incorrect.');
         return;
       }
       localStorage.setItem('vt_agent_remember', rememberMe ? 'true' : 'false');
@@ -96,24 +100,22 @@ export default function LoginScreen() {
           />
         </div>
 
-        {loginCode.includes('@') && (
-          <div className="flex flex-col gap-2">
-            <label className="text-gray-300 text-sm font-medium">Mot de passe</label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full px-4 py-3.5 rounded-xl bg-[#1e1640] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors text-sm pr-12"
-                required={loginCode.includes('@')}
-              />
-              <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-gray-300 text-sm font-medium">Mot de passe</label>
+          <div className="relative">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-3.5 rounded-xl bg-[#1e1640] border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors text-sm pr-12"
+              required
+            />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
           </div>
-        )}
+        </div>
 
         {error && (
           <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">

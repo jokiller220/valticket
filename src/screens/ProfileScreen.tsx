@@ -24,6 +24,7 @@ export default function ProfileScreen() {
     { icon: Settings, label: 'Paramètres', screen: 'settings' as const },
     { icon: HelpCircle, label: 'Aide', screen: 'help' as const },
     { icon: FileText, label: 'Rapport', screen: 'report' as const },
+    { icon: Key, label: 'Code temporaire', screen: 'temp-code' as const },
   ];
 
   return (
