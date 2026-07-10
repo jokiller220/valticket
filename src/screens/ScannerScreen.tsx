@@ -27,7 +27,7 @@ export default function ScannerScreen() {
     setCameraError('');
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } }
+        video: { facingMode: 'environment' }
       });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -242,10 +242,16 @@ export default function ScannerScreen() {
       {/* Camera viewport */}
       <div className="relative flex-1 flex flex-col items-center justify-center bg-black">
         {!cameraError ? (
-          <div className="relative w-full h-full md:max-w-2xl md:mx-auto md:rounded-2xl md:overflow-hidden md:my-6 md:shadow-2xl">
+          <div className="relative w-full h-full md:max-w-2xl md:mx-auto md:rounded-2xl md:overflow-hidden md:my-6 md:shadow-2xl bg-black">
+            {!cameraActive && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black z-10">
+                <div className="w-8 h-8 border-2 border-purple-400 border-t-transparent rounded-full animate-spin mb-4" />
+                <p className="text-gray-400 text-sm">Démarrage de la caméra...</p>
+              </div>
+            )}
             <video
               ref={videoRef}
-              className="w-full h-full object-cover"
+              className={`w-full h-full object-cover transition-opacity duration-300 ${cameraActive ? 'opacity-100' : 'opacity-0'}`}
               playsInline muted
             />
             <canvas ref={canvasRef} className="hidden" />
