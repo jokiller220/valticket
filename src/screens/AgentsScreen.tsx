@@ -35,7 +35,7 @@ export default function AgentsScreen() {
   const activeCount = agents.filter(a => a.is_active).length;
 
   return (
-    <div className="flex flex-col flex-1 bg-[#0d0a1a]">
+    <div className="flex flex-col flex-1 min-h-full bg-[#0d0a1a]">
       {/* Header */}
       <div className="px-5 md:px-8 lg:px-10 pt-6 md:pt-8 pb-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-3">

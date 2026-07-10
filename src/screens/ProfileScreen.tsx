@@ -28,7 +28,7 @@ export default function ProfileScreen() {
   ];
 
   return (
-    <div className="flex flex-col flex-1 bg-[#0d0a1a]">
+    <div className="flex flex-col flex-1 min-h-full bg-[#0d0a1a]">
       {/* Header */}
       <div className="px-5 md:px-8 lg:px-10 pt-6 md:pt-8 pb-4 border-b border-white/[0.06]">
         <div className="flex items-center gap-3">
@@ -39,7 +39,7 @@ export default function ProfileScreen() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto pb-24 md:pb-6">
+      <div className="flex-1 overflow-y-auto pb-28 md:pb-6 after:content-[''] after:block after:h-28 md:after:h-6">
         <div className="px-5 md:px-8 lg:px-10 py-6">
           <div className="max-w-2xl mx-auto flex flex-col gap-5">
 

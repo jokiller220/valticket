@@ -68,7 +68,7 @@ function Router() {
       <Sidebar />
 
       {/* Main content */}
-      <main className="flex-1 flex flex-col h-full bg-[#0d0a1a] overflow-y-auto safe-pt safe-pl safe-pr">
+      <main className="flex-1 flex flex-col h-full bg-[#0d0a1a] overflow-hidden safe-pt safe-pl safe-pr">
         {content}
       </main>
     </div>

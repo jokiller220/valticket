@@ -67,7 +67,7 @@ export default function StatisticsScreen() {
   const totalTypeCount = typeStats.reduce((s, t) => s + t.count, 0) || 1;
 
   return (
-    <div className="flex flex-col flex-1 bg-[#0d0a1a]">
+    <div className="flex flex-col flex-1 min-h-full bg-[#0d0a1a]">
       {/* Header */}
       <div className="px-5 md:px-8 lg:px-10 pt-6 md:pt-8 pb-4 border-b border-white/[0.06]">
         <div className="flex items-center justify-between">
@@ -95,7 +95,7 @@ export default function StatisticsScreen() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto pb-24 md:pb-6">
+      <div className="flex-1 overflow-y-auto pb-28 md:pb-6 after:content-[''] after:block after:h-28 md:after:h-6">
         <div className="px-5 md:px-8 lg:px-10 py-5 md:py-6 flex flex-col gap-5">
           <h1 className="text-xl md:text-2xl font-bold text-white">Statistiques</h1>
 

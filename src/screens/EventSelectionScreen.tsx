@@ -38,7 +38,7 @@ export default function EventSelectionScreen() {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-[#0d0a1a]">
+    <div className="flex flex-col flex-1 min-h-full bg-[#0d0a1a]">
       <div className="flex items-center gap-3 px-6 pt-8 pb-5">
         <button onClick={() => navigate('login')} className="text-gray-400 hover:text-white transition-colors">
           <ArrowLeft size={20} />

@@ -47,7 +47,7 @@ export default function AddAgentScreen() {
 
   if (success) {
     return (
-      <div className="flex flex-col flex-1 bg-[#0d0a1a] items-center justify-center px-8 gap-6">
+      <div className="flex flex-col flex-1 min-h-full bg-[#0d0a1a] items-center justify-center px-8 gap-6">
         <div className="w-20 h-20 rounded-full bg-green-500/10 border border-green-500/30 flex items-center justify-center">
           <CheckCircle size={40} className="text-green-400" />
         </div>
@@ -66,7 +66,7 @@ export default function AddAgentScreen() {
   }
 
   return (
-    <div className="flex flex-col flex-1 bg-[#0d0a1a]">
+    <div className="flex flex-col flex-1 min-h-full bg-[#0d0a1a]">
       <div className="flex items-center gap-3 px-5 md:px-8 lg:px-10 pt-6 md:pt-8 pb-4 border-b border-white/[0.06]">
         <button onClick={goBack} className="text-gray-400 hover:text-white transition-colors">
           <ArrowLeft size={20} />
